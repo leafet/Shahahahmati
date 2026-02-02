@@ -8,7 +8,7 @@ namespace Systems.Figures
         protected override bool ValidateMove(int x, int y)
         {
             if (!base.ValidateMove(x, y)) return false;
-            return Mathf.Abs(Current_cell.Grid_Coordinates.x - x) <= 2;
+            return Mathf.Abs(Current_cell.Grid_Coordinates.x - x) <= 5;
         }
     }
 }

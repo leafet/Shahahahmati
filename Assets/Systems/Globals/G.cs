@@ -1,7 +1,9 @@
 using System;
 using Systems.Figures;
 using Systems.GameField;
+using Systems.Input;
 using Systems.Interface;
+using Systems.Movement;
 using UnityEngine;
 using static Systems.Globals.Constants;
 
@@ -11,6 +13,8 @@ public class G : MonoBehaviour
     
     public Field GameField;
     public OnGameUI OnGameUI;
+    public InputService InputService;
+    public FigureInteractionService FigureInteractionService;
     
     void Awake()
     {
@@ -22,24 +26,44 @@ public class G : MonoBehaviour
 
         Instance = this;
         
-        InitializeGameField();
+        initializeGameField();
 
-        MoveCameraToFieldCenter();
+        moveCameraToFieldCenter();
 
-        InitializeDebugFeatures();
+        initializeDebugFeatures();
+
+        initializeInputService();
+
+        initializeFigureMovementService();
         
-        InitializeOnGameUI();
+        initializeOnGameUI();
     }
 
-    private void InitializeOnGameUI()
+    private void initializeFigureMovementService()
     {
-        OnGameUI onGameUIgo = gameObject.AddComponent<OnGameUI>();
-        onGameUIgo.Initialize();
+        FigureInteractionService figureInteractionService = gameObject.AddComponent<FigureInteractionService>();
+        figureInteractionService.Initialize();
         
-        OnGameUI = onGameUIgo;
+        FigureInteractionService = figureInteractionService;
     }
 
-    private void MoveCameraToFieldCenter()
+    private void initializeInputService()
+    {
+        InputService inputService = gameObject.AddComponent<InputService>();
+        inputService.Initialize();
+        
+        InputService = inputService;
+    }
+
+    private void initializeOnGameUI()
+    {
+        OnGameUI onGameUI = gameObject.AddComponent<OnGameUI>();
+        onGameUI.Initialize();
+        
+        OnGameUI = onGameUI;
+    }
+
+    private void moveCameraToFieldCenter()
     {
         if (Camera.main == null) return;
         
@@ -50,7 +74,7 @@ public class G : MonoBehaviour
         Camera.main.transform.position = new Vector3(FIELD_SIZE / 2, camera_y_pos, FIELD_SIZE / 2);
     }
 
-    private void InitializeGameField()
+    private void initializeGameField()
     {
         GameObject gameField = new GameObject("Game Field");
         Field game_field = gameField.AddComponent<Field>();
@@ -58,7 +82,7 @@ public class G : MonoBehaviour
         GameField = game_field;
     }
 
-    private void InitializeDebugFeatures()
+    private void initializeDebugFeatures()
     {
         GameObject PawnGO = new GameObject("Pawn");
         Pawn pawn_logic = PawnGO.AddComponent<Pawn>();

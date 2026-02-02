@@ -12,7 +12,6 @@ namespace Systems.Interface
         
         public void Initialize()
         {
-            PawnVisual = new GameObject("Pawn Visual");
             PawnVisual = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             PawnVisual.transform.localScale = new Vector3(12, 12, 12);
         }
@@ -28,7 +27,7 @@ namespace Systems.Interface
                     switch (cell.Figure.Type)
                     {
                         case FigureType.Pawn:
-                            PawnVisual.transform.position = cell.Figure.transform.position;
+                            PawnVisual.transform.SetParent(cell.Figure.transform, false);
                             break;
                     }
                 }

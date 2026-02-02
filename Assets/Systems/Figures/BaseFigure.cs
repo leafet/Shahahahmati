@@ -38,7 +38,6 @@ namespace Systems.Figures
             if (ValidateMove(x, y))
             {
                 Current_cell = G.Instance.GameField.CellsGrid[x][y];
-                Debug.Log($"{Current_cell.Grid_Coordinates}");
                 scalePositionToFieldSize();
             }
         }
@@ -84,6 +83,7 @@ namespace Systems.Figures
             
             transform.position = targetPosition;
         }
+        
         
     }
 }
