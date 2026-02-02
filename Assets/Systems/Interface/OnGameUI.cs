@@ -14,6 +14,7 @@ namespace Systems.Interface
         {
             PawnVisual = new GameObject("Pawn Visual");
             PawnVisual = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            PawnVisual.transform.localScale = new Vector3(3, 3, 3);
         }
 
         private void FixedUpdate()
