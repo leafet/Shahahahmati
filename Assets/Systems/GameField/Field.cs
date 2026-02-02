@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Systems.Figures;
+﻿using System;
+using System.Collections.Generic;
+using static Systems.Globals.Constants;
 using UnityEngine;
 
 namespace Systems.GameField
@@ -8,78 +8,54 @@ namespace Systems.GameField
     public class Field : MonoBehaviour
     {
         public readonly List<List<Cell>> CellsGrid = new();
-
-        private int _grid_size;
-
-        private int _cell_size;
         
-        public void Initialize(int grid_size, int cell_size)
+        public void Initialize()
         {
-            _grid_size = grid_size;
-            _cell_size = cell_size;
+            generateCellsAsOneImage();
             
-            GenerateCells();
-            
-            GameObject PawnGO = new GameObject("Pawn");
-            Pawn pawn_logic = PawnGO.AddComponent<Pawn>();
-        
-            pawn_logic.Initialize(CellsGrid[0][0], FigureType.Pawn);
-        
-            CellsGrid[0][0].Figure = pawn_logic;
+            gameObject.transform.rotation = Quaternion.Euler(90, 0, 0);
         }
 
-        private void GenerateCells()
+        private void generateCellsAsOneImage()
         {
-            for (int i = 0; i < _grid_size; i++)
+            Texture2D texture = new Texture2D(FIELD_SIZE, FIELD_SIZE);
+            Color[] texture_colors = new Color[FIELD_SIZE * FIELD_SIZE];
+            
+            for (int i = 0; i < GRID_SIZE; i++)
             {
                 List<Cell> cells_row = new List<Cell>();
-                for (int j = 0; j < _grid_size; j++)
+                
+                for (int j = 0; j < GRID_SIZE; j++)
                 {
+                    Vector3 cell_pos = new Vector3(i * CELL_SIZE, 0, j * CELL_SIZE);
                     
-                    Texture2D current_cell_tex = new Texture2D(_cell_size, _cell_size);
+                    Cell cell_logic = new Cell();
                     
-                    if ((i + j) % 2 == 0)
-                    {
-                        Color[] current_cell_colors = new Color[_cell_size * _cell_size];
-
-                        for (int k = 0; k < current_cell_colors.Length; k++)
-                        {
-                            current_cell_colors[k] = Color.white;
-                        }
-                        
-                        current_cell_tex.SetPixels(current_cell_colors);
-                        current_cell_tex.Apply();
-                    }
-                    else
-                    {
-                        Color[] current_cell_colors = new Color[_cell_size * _cell_size];
-
-                        for (int k = 0; k < current_cell_colors.Length; k++)
-                        {
-                            current_cell_colors[k] = Color.black;
-                        }
-                        
-                        current_cell_tex.SetPixels(current_cell_colors);
-                        current_cell_tex.Apply();
-                    }
-                    
-                    Vector3 cell_pos = new Vector3(i * _cell_size, 0, j * _cell_size);
-                    
-                    Sprite cell_sprite = 
-                        Sprite.Create(current_cell_tex, 
-                            new Rect(0, 0, _cell_size, _cell_size), 
-                            new Vector2(0, 0), 1.0f);
-                    
-                    GameObject cell_go = new GameObject($"Cell {i} {j}");
-                    
-                    Cell cell_logic = cell_go.AddComponent<Cell>();
-                    
-                    cell_logic.Initialize(new Vector2Int(i, j) ,cell_pos, cell_sprite, null);
+                    cell_logic.Initialize(new Vector2Int(i, j) ,cell_pos, null);
                     
                     cells_row.Add(cell_logic);
                 }
+                
                 CellsGrid.Add(cells_row);
             }
+            
+            for (int k = 0; k < texture_colors.Length; k++)
+            {
+                if (k % (FIELD_SIZE * CELL_SIZE * 2) < FIELD_SIZE * CELL_SIZE)
+                    texture_colors[k] = (k % (CELL_SIZE * 2) < CELL_SIZE) ? Color.white : Color.black;
+                else
+                    texture_colors[k] = (k % (CELL_SIZE * 2) < CELL_SIZE) ? Color.black : Color.white;
+            }
+            
+            texture.SetPixels(texture_colors);
+            texture.Apply();
+            
+            Sprite grid_sprite = 
+                Sprite.Create(texture, 
+                    new Rect(0, 0, FIELD_SIZE, FIELD_SIZE), 
+                    new Vector2(0, 0), 1.0f);
+            
+            gameObject.AddComponent<SpriteRenderer>().sprite = grid_sprite;
         }
     }
 }

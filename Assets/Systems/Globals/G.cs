@@ -26,6 +26,8 @@ public class G : MonoBehaviour
 
         MoveCameraToFieldCenter();
 
+        InitializeDebugFeatures();
+        
         InitializeOnGameUI();
     }
 
@@ -52,9 +54,15 @@ public class G : MonoBehaviour
     {
         GameObject gameField = new GameObject("Game Field");
         Field game_field = gameField.AddComponent<Field>();
-        game_field.Initialize(GRID_SIZE, CELL_SIZE);
+        game_field.Initialize();
         GameField = game_field;
+    }
+
+    private void InitializeDebugFeatures()
+    {
+        GameObject PawnGO = new GameObject("Pawn");
+        Pawn pawn_logic = PawnGO.AddComponent<Pawn>();
         
-        
+        pawn_logic.Initialize(Instance.GameField.CellsGrid[0][0], FigureType.Pawn);
     }
 }

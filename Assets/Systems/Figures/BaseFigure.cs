@@ -1,4 +1,5 @@
-﻿using Systems.GameField;
+﻿using System.Collections;
+using Systems.GameField;
 using static Systems.Globals.Constants;
 using UnityEngine;
 
@@ -44,19 +45,44 @@ namespace Systems.Figures
 
         private void scalePositionToFieldSize()
         {
-            gameObject.transform.position = 
+            
+            Vector3 newPos = 
                 new Vector3(Current_cell.Grid_Coordinates.x * CELL_SIZE + CELL_SIZE / 2, 
                     0, 
                     Current_cell.Grid_Coordinates.y * CELL_SIZE + CELL_SIZE / 2);
+            
+            StartCoroutine(MoveOverTime(newPos, 0.5f));
         }
         
         public void Initialize(Cell current_cell, FigureType type)
         {
-            //Debug.Log($"{Current_cell.Grid_Coordinates}");
-            
             Current_cell = current_cell;
             Type = type;
             scalePositionToFieldSize();
+
+            G.Instance.GameField.CellsGrid[current_cell.Grid_Coordinates.x][current_cell.Grid_Coordinates.y].Figure =
+                this;
+        }
+
+        IEnumerator MoveOverTime(Vector3 targetPosition, float duration)
+        {
+            Vector3 startPos = transform.position;
+            float elapsedTime = 0f;
+
+            while (elapsedTime < duration)
+            {
+                float linearT = elapsedTime / duration;
+                
+                float easedT = Mathf.SmoothStep(0f, 1f, linearT);
+                
+                transform.position = Vector3.Lerp(startPos, targetPosition, easedT);
+                
+                elapsedTime += Time.deltaTime;
+                
+                yield return null;
+            }
+            
+            transform.position = targetPosition;
         }
         
     }
