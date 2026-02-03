@@ -2,6 +2,7 @@
 using Systems.GameField;
 using static Systems.Globals.Constants;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Systems.Figures
 {
@@ -14,22 +15,43 @@ namespace Systems.Figures
         Queen,
         King
     }
+
+    public enum FigureTeam
+    {
+        Team1,
+        Team2
+    }
     
     public class BaseFigure : MonoBehaviour
     {
         protected Cell Current_cell {get; private set;}
-        
         public FigureType Type {get; private set;}
 
+        public FigureTeam FigureTeam;
+        
+        public void Initialize(Cell current_cell, FigureType type, FigureTeam team)
+        {
+            Current_cell = current_cell;
+            Type = type;
+            scalePositionToFieldSize();
+
+            FigureTeam = team;
+            
+            G.Instance.GameField.CellsGrid[current_cell.Grid_Coordinates.x][current_cell.Grid_Coordinates.y].Figure =
+                this;
+        }
+        
         protected virtual bool ValidateMove(int x, int y)
         {
+            Cell target_cell = G.Instance.GameField.CellsGrid[x][y];
+            
             if(x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE)
                 return false;
+
+            BaseFigure possibleTarget = target_cell.Figure; 
             
-            if(G.Instance.GameField.CellsGrid[x][y].Figure is not null)
+            if(possibleTarget is not null)
                 return false;
-            
-            Debug.Log($"{G.Instance.GameField.CellsGrid[x][y].Figure?.Type}");
             
             return true;
         }
@@ -64,16 +86,6 @@ namespace Systems.Figures
             StartCoroutine(MoveOverTime(newPos, 0.5f));
         }
         
-        public void Initialize(Cell current_cell, FigureType type)
-        {
-            Current_cell = current_cell;
-            Type = type;
-            scalePositionToFieldSize();
-
-            G.Instance.GameField.CellsGrid[current_cell.Grid_Coordinates.x][current_cell.Grid_Coordinates.y].Figure =
-                this;
-        }
-
         IEnumerator MoveOverTime(Vector3 targetPosition, float duration)
         {
             Vector3 startPos = transform.position;

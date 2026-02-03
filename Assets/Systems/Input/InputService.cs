@@ -15,16 +15,12 @@ namespace Systems.Input
         public void Initialize()
         {
             _playerInput = new PlayerInput();
-
-            Debug.Log("PlayerInput.Initialize");
             
             setupActions();
         }
 
         private void setupActions()
         {
-            Debug.Log("setupActions");
-            
             _playerInput.Player.Enable();
             
             _playerInput.Player.MouseMove.performed += ctx => OnMouseMove?.Invoke(ctx, ctx.ReadValue<Vector2>());

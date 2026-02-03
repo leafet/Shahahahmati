@@ -85,23 +85,35 @@ public class G : MonoBehaviour
 
     private void initializeDebugFeatures()
     {
-        GameObject PawnVisual1 = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-        PawnVisual1.transform.localScale = new Vector3(24, 12, 24);
+        TEMPORARY_create_piece(0, 0, FigureType.Pawn, FigureTeam.Team1);
+        TEMPORARY_create_piece(1, 0, FigureType.Pawn, FigureTeam.Team1);
+        TEMPORARY_create_piece(2, 0, FigureType.Pawn, FigureTeam.Team1);
+        
+        TEMPORARY_create_piece(0, GRID_SIZE - 1, FigureType.Pawn, FigureTeam.Team2);
+        TEMPORARY_create_piece(1, GRID_SIZE - 1, FigureType.Pawn, FigureTeam.Team2);
+        TEMPORARY_create_piece(2, GRID_SIZE - 1, FigureType.Pawn, FigureTeam.Team2);
+    }
+
+    private void TEMPORARY_create_piece(int x, int y, FigureType type, FigureTeam team)
+    {
+        GameObject PawnVisual = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+        PawnVisual.transform.localScale = new Vector3(24, 12, 24);
+
+        switch (team)
+        {
+            case FigureTeam.Team1:
+                PawnVisual.GetComponent<Renderer>().material.color = Color.white;
+                break;
+            case FigureTeam.Team2:
+                PawnVisual.GetComponent<Renderer>().material.color = Color.black;
+                break;
+        }
         
         GameObject PawnGO = new GameObject("Pawn");
         Pawn pawn_logic = PawnGO.AddComponent<Pawn>();
         
-        pawn_logic.Initialize(Instance.GameField.CellsGrid[0][0], FigureType.Pawn);
+        pawn_logic.Initialize(Instance.GameField.CellsGrid[x][y], type, team);
         
-        PawnVisual1.transform.SetParent(PawnGO.transform);
-        
-        GameObject PawnVisual2 = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-        PawnVisual2.transform.localScale = new Vector3(24, 12, 24);
-        
-        GameObject PawnGO1 = new GameObject("Pawn");
-        Pawn pawn_logic1 = PawnGO1.AddComponent<Pawn>();
-        
-        pawn_logic1.Initialize(Instance.GameField.CellsGrid[0][1], FigureType.Pawn);
-        PawnVisual2.transform.SetParent(PawnGO1.transform);
+        PawnVisual.transform.SetParent(PawnGO.transform);
     }
 }
