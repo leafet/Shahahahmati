@@ -92,28 +92,51 @@ public class G : MonoBehaviour
         TEMPORARY_create_piece(0, GRID_SIZE - 1, FigureType.Pawn, FigureTeam.Team2);
         TEMPORARY_create_piece(1, GRID_SIZE - 1, FigureType.Pawn, FigureTeam.Team2);
         TEMPORARY_create_piece(2, GRID_SIZE - 1, FigureType.Pawn, FigureTeam.Team2);
+        
+        TEMPORARY_create_piece(4, 4, FigureType.Bishop, FigureTeam.Team1);
     }
 
     private void TEMPORARY_create_piece(int x, int y, FigureType type, FigureTeam team)
     {
-        GameObject PawnVisual = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-        PawnVisual.transform.localScale = new Vector3(24, 12, 24);
+        GameObject PieceVisual = null;
 
-        switch (team)
+        switch (type)
         {
-            case FigureTeam.Team1:
-                PawnVisual.GetComponent<Renderer>().material.color = Color.white;
+            case FigureType.Pawn:
+                PieceVisual = GameObject.CreatePrimitive(PrimitiveType.Capsule);
                 break;
-            case FigureTeam.Team2:
-                PawnVisual.GetComponent<Renderer>().material.color = Color.black;
+            case FigureType.Bishop:
+                PieceVisual = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 break;
         }
         
+        PieceVisual.transform.localScale = new Vector3(24, 12, 24);
+        
         GameObject PawnGO = new GameObject("Pawn");
-        Pawn pawn_logic = PawnGO.AddComponent<Pawn>();
         
-        pawn_logic.Initialize(Instance.GameField.CellsGrid[x][y], type, team);
+        switch (type)
+        {
+            case FigureType.Pawn:
+                Pawn pawn_logic = PawnGO.AddComponent<Pawn>();
+                pawn_logic.Initialize(Instance.GameField.CellsGrid[x][y], type, team);
+                PieceVisual.transform.SetParent(PawnGO.transform);
+                break;
+            case FigureType.Bishop:
+                Bishop bishop = PawnGO.AddComponent<Bishop>();
+                bishop.Initialize(Instance.GameField.CellsGrid[x][y], type, team);
+                PieceVisual.transform.SetParent(PawnGO.transform);
+                break;
+        }
         
-        PawnVisual.transform.SetParent(PawnGO.transform);
+        switch (team)
+        {
+            case FigureTeam.Team1:
+                PieceVisual.GetComponent<Renderer>().material.color = Color.white;
+                break;
+            case FigureTeam.Team2:
+                PieceVisual.GetComponent<Renderer>().material.color = Color.black;
+                break;
+        }
+        
     }
 }
