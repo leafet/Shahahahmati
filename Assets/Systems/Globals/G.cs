@@ -4,6 +4,7 @@ using Systems.GameField;
 using Systems.Input;
 using Systems.Interface;
 using Systems.Movement;
+using Unity.VisualScripting;
 using UnityEngine;
 using static Systems.Globals.Constants;
 
@@ -84,9 +85,23 @@ public class G : MonoBehaviour
 
     private void initializeDebugFeatures()
     {
+        GameObject PawnVisual1 = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+        PawnVisual1.transform.localScale = new Vector3(24, 12, 24);
+        
         GameObject PawnGO = new GameObject("Pawn");
         Pawn pawn_logic = PawnGO.AddComponent<Pawn>();
         
         pawn_logic.Initialize(Instance.GameField.CellsGrid[0][0], FigureType.Pawn);
+        
+        PawnVisual1.transform.SetParent(PawnGO.transform);
+        
+        GameObject PawnVisual2 = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+        PawnVisual2.transform.localScale = new Vector3(24, 12, 24);
+        
+        GameObject PawnGO1 = new GameObject("Pawn");
+        Pawn pawn_logic1 = PawnGO1.AddComponent<Pawn>();
+        
+        pawn_logic1.Initialize(Instance.GameField.CellsGrid[0][1], FigureType.Pawn);
+        PawnVisual2.transform.SetParent(PawnGO1.transform);
     }
 }

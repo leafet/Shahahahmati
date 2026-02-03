@@ -25,6 +25,12 @@ namespace Systems.Figures
         {
             if(x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE)
                 return false;
+            
+            if(G.Instance.GameField.CellsGrid[x][y].Figure is not null)
+                return false;
+            
+            Debug.Log($"{G.Instance.GameField.CellsGrid[x][y].Figure?.Type}");
+            
             return true;
         }
 
@@ -37,7 +43,12 @@ namespace Systems.Figures
         {
             if (ValidateMove(x, y))
             {
+                G.Instance.GameField.CellsGrid[Current_cell.Grid_Coordinates.x][Current_cell.Grid_Coordinates.y].Figure 
+                    = null;
+                
                 Current_cell = G.Instance.GameField.CellsGrid[x][y];
+                G.Instance.GameField.CellsGrid[x][y].Figure = this;
+                
                 scalePositionToFieldSize();
             }
         }

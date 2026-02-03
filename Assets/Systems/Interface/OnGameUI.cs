@@ -12,8 +12,7 @@ namespace Systems.Interface
         
         public void Initialize()
         {
-            PawnVisual = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            PawnVisual.transform.localScale = new Vector3(12, 12, 12);
+            
         }
 
         private void FixedUpdate()
@@ -22,14 +21,7 @@ namespace Systems.Interface
             {
                 foreach (Cell cell in Row)
                 {
-                    if (cell.Figure is null) return;
-                    
-                    switch (cell.Figure.Type)
-                    {
-                        case FigureType.Pawn:
-                            PawnVisual.transform.SetParent(cell.Figure.transform, false);
-                            break;
-                    }
+                    Debug.Log(cell.Figure?.Type);
                 }
             }
         }
